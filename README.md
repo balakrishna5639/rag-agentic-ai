@@ -129,6 +129,14 @@ uvicorn app:app --host 127.0.0.1 --port 8000 --reload
 ```
 Once running, navigate to the auto-generated interactive Swagger UI: 👉 **http://127.0.0.1:8000/docs**
 
+### 🌐 How to Use the Swagger UI
+1. Open the [Live API Demo](https://rag-agentic-ai-jlk5.onrender.com/docs) (or your local `http://127.0.0.1:8000/docs`).
+2. Click on the green **`POST /chat`** endpoint bar to expand it.
+3. Click the **"Try it out"** button on the right side.
+4. In the **Request body** text box, edit the `"query"` string to ask any question about Agentic AI.
+5. Click the large blue **"Execute"** button.
+6. Scroll down to the **"Server response"** section to see the fully structured JSON answer, complete with confidence scores and context chunks!
+
 ---
 
 ## 🧪 Testing & Quality Assurance
