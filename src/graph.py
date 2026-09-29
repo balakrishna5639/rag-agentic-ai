@@ -1,7 +1,7 @@
 import logging
 from typing import List, TypedDict, Dict, Any
 from langgraph.graph import StateGraph, START, END
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_core.prompts import PromptTemplate
 from src.config import Config
@@ -21,9 +21,16 @@ class AgentState(TypedDict):
     is_grounded: bool
 
 def build_rag_graph(index_name: str = Config.PINECONE_INDEX_NAME):
-    embeddings = OpenAIEmbeddings(model=Config.EMBEDDING_MODEL)
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model=Config.EMBEDDING_MODEL,
+        google_api_key=Config.GOOGLE_API_KEY
+    )
     vectorstore = PineconeVectorStore(index_name=index_name, embedding=embeddings)
-    llm = ChatOpenAI(model=Config.LLM_MODEL, temperature=Config.LLM_TEMPERATURE)
+    llm = ChatGoogleGenerativeAI(
+        model=Config.LLM_MODEL, 
+        temperature=Config.LLM_TEMPERATURE,
+        google_api_key=Config.GOOGLE_API_KEY
+    )
 
     def retrieve_node(state: AgentState):
         """
@@ -62,7 +69,10 @@ Question: {state['question']}
 Answer:"""
 
         response = llm.invoke(prompt)
-        return {"answer": response.content.strip()}
+        content = response.content
+        if isinstance(content, list):
+            content = " ".join([c if isinstance(c, str) else c.get("text", "") for c in content])
+        return {"answer": str(content).strip()}
 
     def grade_hallucination_node(state: AgentState):
         """
@@ -93,7 +103,10 @@ Is the answer strictly based on the facts in the Context?
 Answer 'yes' or 'no' only."""
         
         grade_response = llm.invoke(grader_prompt)
-        grade = grade_response.content.strip().lower()
+        content = grade_response.content
+        if isinstance(content, list):
+            content = " ".join([c if isinstance(c, str) else c.get("text", "") for c in content])
+        grade = str(content).strip().lower()
         
         if "yes" in grade:
             # Calculate average cosine similarity from retrieval as the confidence score

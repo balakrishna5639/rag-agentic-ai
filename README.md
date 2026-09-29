@@ -22,10 +22,10 @@
 ---
 
 ## 🚀 Project Overview
-This project is an end-to-end RAG architecture implementation designed to parse, index, and retrieve domain-specific information from a PDF document. By combining **LangGraph** for stateful orchestration, **Pinecone** for scalable vector storage, and **OpenAI's LLMs** for generation, the chatbot effectively answers user queries while preventing hallucinations via strict context-grounding.
+This project is an end-to-end RAG architecture implementation designed to parse, index, and retrieve domain-specific information from a PDF document. By combining **LangGraph** for stateful orchestration, **Pinecone** for scalable vector storage, and **Google Gemini** for generation, the chatbot effectively answers user queries while preventing hallucinations via strict context-grounding.
 
 ### 🌟 Key Features
-- **Semantic Search:** Employs `text-embedding-3-small` for dense vector generation.
+- **Semantic Search:** Employs Gemini embeddings (`models/gemini-embedding-001`) for dense vector generation.
 - **Stateful Graph Orchestration:** Manages data flow between retrieval, generation, and hallucination-grading nodes using `langgraph`.
 - **Strict Grounding:** Refuses to answer queries (e.g., "What is the capital of France?") if the knowledge is absent in the document context.
 - **RESTful API:** Exposes endpoints via FastAPI returning exact structured JSON (query, final_answer, retrieved_context_chunks, confidence_score).
@@ -37,7 +37,7 @@ This project is an end-to-end RAG architecture implementation designed to parse,
 ```text
 +-------------------+       +-------------------+       +--------------------+
 |                   |       |                   |       |                    |
-|  1. PDF Document  +------>+  2. PyPDFLoader & +------>+ 3. OpenAI Embed.   |
+|  1. PDF Document  +------>+  2. PyPDFLoader & +------>+ 3. Gemini Embed.   |
 |   (Agentic AI)    |       |   TextSplitter    |       |    (Vector Gen)    |
 |                   |       |                   |       |                    |
 +-------------------+       +-------------------+       +---------+----------+
@@ -66,7 +66,7 @@ This project is an end-to-end RAG architecture implementation designed to parse,
 Ensure your system meets the following specifications:
 - **Python:** `v3.10` or higher
 - **API Keys:** You will need valid keys for:
-  - OpenAI (LLM and Embeddings)
+  - Google Gemini (LLM and Embeddings)
   - Pinecone (Vector Index)
 
 ---
@@ -94,7 +94,7 @@ pip install -r requirements.txt
 ```
 
 **Step 4: Environment Variables**
-Copy the template `.env.example` to a new file named `.env` and fill in your credentials. Ensure you have a Pinecone index named `agentic-ai-index` with dimensions set to `1536` and metric `cosine`.
+Copy the template `.env.example` to a new file named `.env` and fill in your credentials. Ensure you have a Pinecone index named `agentic-ai-index` with dimensions set to `3072` and metric `cosine`.
 
 ---
 

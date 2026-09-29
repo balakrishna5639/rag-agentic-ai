@@ -12,14 +12,15 @@ class Config:
     Configuration class to hold application-level constants and environment variables.
     """
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
     PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
     PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "agentic-ai-index")
     
     # Embedding configurations
-    EMBEDDING_MODEL = "openai/text-embedding-3-small"
+    EMBEDDING_MODEL = "models/gemini-embedding-001"
     
     # LLM configurations
-    LLM_MODEL = "openai/gpt-4o-mini"
+    LLM_MODEL = "gemini-3.5-flash"
     LLM_TEMPERATURE = 0.0
     
     # Chunking parameters for Document parsing

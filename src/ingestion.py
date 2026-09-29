@@ -2,7 +2,7 @@ import os
 import logging
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from src.config import Config
 
@@ -47,15 +47,24 @@ def run_ingestion(pdf_path: str = Config.DEFAULT_PDF_PATH, index_name: str = Con
         logger.info(f"Document split into {len(chunks)} text chunks.")
 
         # Step 3: Data Loading (Embeddings & Vector Store)
-        logger.info("Initializing OpenAI Embeddings...")
-        embeddings = OpenAIEmbeddings(model=Config.EMBEDDING_MODEL)
-        
-        logger.info(f"Upserting vectors into Pinecone Index: {index_name}...")
-        vector_store = PineconeVectorStore.from_documents(
-            documents=chunks,
-            embedding=embeddings,
-            index_name=index_name
+        logger.info("Initializing Google Gemini Embeddings...")
+        embeddings = GoogleGenerativeAIEmbeddings(
+            model=Config.EMBEDDING_MODEL,
+            google_api_key=Config.GOOGLE_API_KEY
         )
+        
+        vector_store = PineconeVectorStore(index_name=index_name, embedding=embeddings)
+        
+        batch_size = 80
+        for i in range(0, len(chunks), batch_size):
+            batch = chunks[i:i + batch_size]
+            logger.info(f"Upserting batch {i//batch_size + 1} of {(len(chunks)-1)//batch_size + 1} ({len(batch)} chunks)...")
+            vector_store.add_documents(batch)
+            if i + batch_size < len(chunks):
+                logger.info("Rate limit protection: sleeping for 60 seconds before next batch...")
+                import time
+                time.sleep(60)
+                
         logger.info("Ingestion completed successfully.")
         
         return vector_store
