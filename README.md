@@ -1,5 +1,7 @@
 # 🤖 RAG-Based AI Chatbot: Agentic AI Assistant
 
+**Live API Demo:** [https://rag-agentic-ai-jlk5.onrender.com/docs](https://rag-agentic-ai-jlk5.onrender.com/docs)
+
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
 ![LangGraph](https://img.shields.io/badge/LangGraph-0.1.0-green)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-teal)
@@ -29,6 +31,20 @@ This project is an end-to-end RAG architecture implementation designed to parse,
 - **Stateful Graph Orchestration:** Manages data flow between retrieval, generation, and hallucination-grading nodes using `langgraph`.
 - **Strict Grounding:** Refuses to answer queries (e.g., "What is the capital of France?") if the knowledge is absent in the document context.
 - **RESTful API:** Exposes endpoints via FastAPI returning exact structured JSON (query, final_answer, retrieved_context_chunks, confidence_score).
+
+### 📄 Verified Response Structure
+Every API request to `/chat` returns a strictly formatted JSON payload:
+```json
+{
+  "query": "What is Agentic AI?",
+  "final_answer": "Agentic AI refers to autonomous systems that...",
+  "retrieved_context_chunks": [
+    "Chunk 1 text from PDF...",
+    "Chunk 2 text from PDF..."
+  ],
+  "confidence_score": 0.92
+}
+```
 
 ---
 
@@ -75,7 +91,7 @@ Ensure your system meets the following specifications:
 
 **Step 1: Clone the Repository**
 ```bash
-git clone <your-repository-url>
+git clone <https://github.com/balakrishna5639/rag-agentic-ai>
 cd rag-agentic-ai
 ```
 
