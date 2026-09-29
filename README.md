@@ -91,7 +91,7 @@ Ensure your system meets the following specifications:
 
 **Step 1: Clone the Repository**
 ```bash
-git clone <https://github.com/balakrishna5639/rag-agentic-ai>
+git clone https://github.com/balakrishna5639/rag-agentic-ai
 cd rag-agentic-ai
 ```
 
